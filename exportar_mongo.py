@@ -1,4 +1,5 @@
 import os
+import json
 import time
 import shutil
 import pandas as pd
@@ -203,7 +204,11 @@ def export_mongo_to_csv():
                     # Quando atinge o tamanho do lote, processa e descarrega no disco
                     if len(chunk) >= BATCH_SIZE:
                         df = pd.json_normalize(chunk)
-                        
+                        for col in df.columns:
+                            df[col] = df[col].apply(
+                                lambda x: json.dumps(x, ensure_ascii=False, default=str) if isinstance(x, (list, dict)) else x
+                            )
+
                         # Limpeza de campos aninhados indesejados
                         palavras = tarefa.get("palavras_escondidas_limpeza", [])
                         if palavras:
@@ -219,6 +224,10 @@ def export_mongo_to_csv():
                 # Processa o último lote remanescente
                 if chunk:
                     df = pd.json_normalize(chunk)
+                    for col in df.columns:
+                        df[col] = df[col].apply(
+                            lambda x: json.dumps(x, ensure_ascii=False, default=str) if isinstance(x, (list, dict)) else x
+                        )
                     palavras = tarefa.get("palavras_escondidas_limpeza", [])
                     if palavras:
                         colunas_remover = [c for c in df.columns if any(p in c.lower() for p in palavras)]
