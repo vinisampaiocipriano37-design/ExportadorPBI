@@ -7,10 +7,20 @@ from dotenv import load_dotenv
 from datetime import datetime
 
 # 1. Carrega as variaveis de ambiente
-load_dotenv()
+# Garantimos que o .env seja buscado na mesma pasta do script
+base_dir = os.path.dirname(os.path.abspath(__file__))
+dotenv_path = os.path.join(base_dir, ".env")
+load_dotenv(dotenv_path)
 
 # Pegando a string de conexao segura
 MONGO_URI = os.getenv("MONGO_URI")
+
+if not MONGO_URI:
+    print(f"\n" + "!"*50)
+    print(f"ERRO: MONGO_URI não encontrada no arquivo .env!")
+    print(f"Caminho tentado: {dotenv_path}")
+    print(f"!"*50)
+    exit(1)
 
 # Variaveis globais de configuracao - Puxando do .env
 CLIENTE_NOME = os.getenv("CLIENTE", "AEROFLEX")
@@ -144,12 +154,15 @@ def export_mongo_to_csv():
                     raise Exception("Não foi possível conectar ao MongoDB após várias tentativas. Abortando.")
 
         # === ETAPA 2: PROCESSAMENTO DAS TABELAS ===
+        if client is None:
+            raise Exception("Erro inesperado: Cliente MongoDB não inicializado.")
+
         for tarefa in TABELAS_PARA_EXPORTAR:
             print(f"\n" + "="*50)
             print(f"[{datetime.now()}] TAREFA: {tarefa['nome_tarefa']}")
             
             # Usaremos um arquivo temporário para garantir que o BI nunca leia um arquivo "pela metade"
-            csv_final = tarefa["csv_final"]
+            csv_final = str(tarefa["csv_final"])
             csv_temp = csv_final + ".tmp"
             
             # Limpa lixo de execuções anteriores abortadas
@@ -158,7 +171,8 @@ def export_mongo_to_csv():
             try:
                 print(f"[{datetime.now()}] Usando Banco de Dados: {DATABASE_NAME}")
                 db = client[DATABASE_NAME]
-                collection = db[tarefa["collection"]]
+                collection_name = str(tarefa["collection"])
+                collection = db[collection_name]
                 
                 # Cursor inteligente: Não carrega tudo na RAM
                 cursor = collection.find({}, tarefa["campos_desejados"])
