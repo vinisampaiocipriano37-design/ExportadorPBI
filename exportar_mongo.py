@@ -124,6 +124,21 @@ TABELAS_PARA_EXPORTAR = [
         },
         "palavras_escondidas_limpeza": [],
         "csv_final": f"RaspadinhasAlternativas_{CLIENTE_NOME}.csv"
+    },
+    {
+        "nome_tarefa": "6 - ConsumidoresGamificacao",
+        "collection": "ConsumidoresGamificacao",
+        "campos_desejados": {
+            "_id": 0,
+            "usuario": 1,
+            "telefone": 1,
+            "cpf": 1,
+            "nome": 1,
+            "xp": 1,
+            "missoesConcluidas": 1
+        },
+        "palavras_escondidas_limpeza": [],
+        "csv_final": f"ConsumidoresGamificacao_{CLIENTE_NOME}.csv"
     }
 ]
 
