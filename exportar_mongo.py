@@ -127,7 +127,23 @@ TABELAS_PARA_EXPORTAR = [
         "csv_final": f"RaspadinhasAlternativas_{CLIENTE_NOME}.csv"
     },
     {
-        "nome_tarefa": "6 - ConsumidoresGamificacao",
+        "nome_tarefa": "6 - Missao",
+        "collection": "Missao",
+        "campos_desejados": {
+            "_id": 0,
+            "nome": 1,
+            "descricao": 1,
+            "id": 1,
+            "dataHoraInicial": 1,
+            "dataHoraFinal": 1,
+            "objetivos": 1,
+            "recompensas": 1
+        },
+        "palavras_escondidas_limpeza": [],
+        "csv_final": f"Missao_{CLIENTE_NOME}.csv"
+    },
+    {
+        "nome_tarefa": "7 - ConsumidoresGamificacao",
         "collection": "ConsumidoresGamificacao",
         "campos_desejados": {
             "_id": 0,
